@@ -45,6 +45,7 @@ jobs:
     - uses: 5monkeys/cobertura-action@master
       with:
         path: ./coverage/cobertura-coverage.xml
+        minimum_coverage: 50
         
     - name: Integration tests
       run: npm run test:integration

@@ -1,0 +1,78 @@
+#Error (line 28): the step 'PublishTestResults@2' does not have a conversion path yet
+#Error (line 37): the step 'PublishCodeCoverageResults@1' does not have a conversion path yet
+#Error (line 47): the step 'PublishTestResults@2' does not have a conversion path yet
+#Error (line 56): the step 'SonarCloudPrepare@1' does not have a conversion path yet
+#Error (line 65): the step 'SonarCloudAnalyze@1' does not have a conversion path yet
+#Note: This is a third party action and currently only supports Linux: https://github.com/marketplace/actions/create-zip-file
+
+name: Example
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v2
+    
+    - name: Use Node.js 16.15
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.15
+        
+    - name: Create .npmrc
+      run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+      
+    - name: Npm version
+      run: npm -v
+      
+    - name: Install
+      run: npm install
+      
+    - name: Format
+      run: npm run format:verify
+      
+    - name: Lint
+      run: npm run lint
+      
+    - name: Unit tests
+      run: npm run test:unit:ci
+      
+    - name: Unit tests reports
+      uses: xportation/junit-coverage-report@main
+      with:
+        junit-path: ./reports/TEST-unit.xml  
+ 
+    - uses: 5monkeys/cobertura-action@master
+      with:
+        path: ./coverage/cobertura-coverage.xml
+        
+    - name: Integration tests
+      run: npm run test:integration
+      
+    - name: Integration tests reports
+      uses: xportation/junit-coverage-report@main
+      with:
+        junit-path: ./reports/TEST-integration.xml 
+   
+    - # "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"
+        #task: SonarCloudPrepare@1
+        #inputs:
+        #  sonarcloud: Sonarcloud
+        #  organization: fsa
+        #  scannermode: CLI
+        #  configmode: file
+    - # "Error: the step 'SonarCloudAnalyze@1' does not have a conversion path yet"
+      run: |
+        echo "Error: the step 'SonarCloudAnalyze@1' does not have a conversion path yet"
+        #task: SonarCloudAnalyze@1
+    - name: Prune dev dependencies
+      run: npm prune --production
+    - name: Remove reporting folders
+      run: rm -rf coverage reports
+    - # 'Note: This is a third party action and currently only supports Linux: https://github.com/marketplace/actions/create-zip-file'
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: zip -qq -r  ${{ github.workspace }}
+    - uses: actions/upload-artifact@v2

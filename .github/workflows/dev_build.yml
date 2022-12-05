@@ -37,23 +37,18 @@ jobs:
     - name: Unit tests
       run: npm run test:unit:ci
       
-    - name: Unit tests reports
-      uses: xportation/junit-coverage-report@main
-      with:
-        junit-path: ./reports/TEST-unit.xml  
- 
-    - uses: 5monkeys/cobertura-action@master
-      with:
-        path: ./coverage/cobertura-coverage.xml
-        minimum_coverage: 50
-        
     - name: Integration tests
       run: npm run test:integration
       
-    - name: Integration tests reports
-      uses: xportation/junit-coverage-report@main
+    - name: Tests report
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
       with:
-        junit-path: ./reports/TEST-integration.xml 
+        junit_files: './reports/TEST-*.xml'
+    
+    - uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: ./coverage/cobertura-coverage.xml
    
     - # "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"
       run: |

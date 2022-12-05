@@ -58,6 +58,20 @@ jobs:
       uses: 5monkeys/cobertura-action@v13
       with:
         path: ./coverage/cobertura-coverage.xml
+        minimum_coverage: 60
+        # Show line rate as specific column.
+        show_line: true
+        # Show branch rate as specific column.
+        show_branch: true
+        # Show class names instead of file names.
+        show_class_names: true
+        # Show line numbers of statements, per module, that was not executed.
+        show_missing: true
+        # Link missing line numbers.
+        link_missing_lines: true
+        # Source directory used for link_missing_lines.
+        link_missing_lines_source_dir: true
+        report_name: Coverage Summary
    
     - # "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"
       run: |

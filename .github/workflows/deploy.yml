@@ -1,0 +1,45 @@
+name: Service release to test environment
+on: workflow_dispatch
+
+env:
+  WEBAPP_NAME: rafb-service-test
+  RESOURCE_GROUP: rafb-service-test_group
+  SLOT_NAME: deploy
+
+jobs:
+  deploy-to-slot:
+    name: Deploy to slot
+    runs-on: ubuntu-latest
+    steps:
+    - name: Log into Azure CLI with service principal
+      uses: azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v2
+      with:
+        name: dev_build
+    
+    - name: Deploy to slot
+      uses: azure/webapps-deploy@v1
+      with: 
+        app-name: ${{ env.WEBAPP_NAME }}
+        slot-name: ${{ env.SLOT_NAME }}
+        package: '*.zip'
+
+  release-to-prod:
+    name: Release to prod
+    needs: deploy-to-slot
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Log into Azure CLI with service principal
+      uses: azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Swap slots
+      run: az webapp deployment slot swap -s ${{ env.SLOT_NAME }} -n ${{ env.WEBAPP_NAME }} -g ${{ env.RESOURCE_GROUP }}
+    
+    

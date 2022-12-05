@@ -54,11 +54,10 @@ jobs:
         junit_files: ./reports/TEST-integration.xml
         check_name: 'Integration Test Results'
     
-    - uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: Publish Coverage Summary
+      uses: 5monkeys/cobertura-action@v13
       with:
-        filename: ./coverage/cobertura-coverage.xml
-        format: markdown
-        output: both
+        path: ./coverage/cobertura-coverage.xml
    
     - # "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"
       run: |

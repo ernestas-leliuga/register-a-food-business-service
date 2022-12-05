@@ -94,6 +94,7 @@ jobs:
         
   deploy-to-slot:
     name: Deploy to slot
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Log into Azure CLI with service principal

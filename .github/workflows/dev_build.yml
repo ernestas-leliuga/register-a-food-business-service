@@ -1,10 +1,3 @@
-#Error (line 28): the step 'PublishTestResults@2' does not have a conversion path yet
-#Error (line 37): the step 'PublishCodeCoverageResults@1' does not have a conversion path yet
-#Error (line 47): the step 'PublishTestResults@2' does not have a conversion path yet
-#Error (line 56): the step 'SonarCloudPrepare@1' does not have a conversion path yet
-#Error (line 65): the step 'SonarCloudAnalyze@1' does not have a conversion path yet
-#Note: This is a third party action and currently only supports Linux: https://github.com/marketplace/actions/create-zip-file
-
 name: dev_build
 on: push
 jobs:
@@ -12,7 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
     
     - name: Use Node.js 16.15
       uses: actions/setup-node@v1
@@ -59,18 +53,8 @@ jobs:
       with:
         path: ./coverage/cobertura-coverage.xml
         minimum_coverage: 60
-        # Show line rate as specific column.
         show_line: true
-        # Show branch rate as specific column.
         show_branch: true
-        # Show class names instead of file names.
-        show_class_names: true
-        # Show line numbers of statements, per module, that was not executed.
-        show_missing: true
-        # Link missing line numbers.
-        link_missing_lines: true
-        # Source directory used for link_missing_lines.
-        link_missing_lines_source_dir: true
         report_name: Coverage Summary
    
     - # "Error: the step 'SonarCloudPrepare@1' does not have a conversion path yet"

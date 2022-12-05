@@ -49,7 +49,7 @@ jobs:
         check_name: 'Integration Test Results'
     
     - name: Publish Coverage Summary
-      uses: 5monkeys/cobertura-action@v13
+      uses: 5monkeys/cobertura-action@master
       with:
         path: ./coverage/cobertura-coverage.xml
         minimum_coverage: 60

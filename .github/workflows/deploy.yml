@@ -93,6 +93,7 @@ jobs:
         path: dev_build.zip
         
   deploy-to-slot:
+    environment: production
     name: Deploy to slot
     needs: build
     runs-on: ubuntu-latest
@@ -116,6 +117,7 @@ jobs:
 
   release-to-prod:
     name: Release to prod
+    environment: production
     needs: deploy-to-slot
     runs-on: ubuntu-latest
 
